@@ -7,6 +7,7 @@
     <groupId>exercise.example.com</groupId>
     <artifactId>number-printer</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -16,5 +17,20 @@
         </dependency>
     </dependencies>
 
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>com.example.exercise.numberprinter.NumberPrinter</mainClass>
+                </manifest>
+             </archive>
+           </configuration>
+        </plugin>
+      </plugins>
+    </build>
 
 </project>
