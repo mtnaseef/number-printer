@@ -1,6 +1,7 @@
 package com.example.exercise.numberprinter;
 
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -27,14 +28,15 @@ public class NumberPrinter {
      * @return A string containing the English words for the amount specified.
      * @throws java.lang.IllegalArgumentException if a negative value is passed.
      */
-    public String numberToWords(final double amount) {
-        if (amount < 0) {
+    public String numberToWords(final BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException(
                     "Amount must be a non-negative value");
         }
-        final long dollars = (long) Math.floor(amount);
-        // We silently ignore any sub-cent amount
-        final int cents = (int)Math.floor((amount - dollars) * 100.0);
+        final long dollars = amount.longValue();
+        final int cents = amount.subtract(BigDecimal.valueOf(dollars))
+                // We silently ignore any sub-cent amount
+                .movePointRight(2).intValue();
         return dollarsToWords(dollars)
                 + " and "
                 + centsToWords(cents)
@@ -115,13 +117,20 @@ public class NumberPrinter {
      *             dollar (and cents) value.
      */
     public static void main(String[] args) {
+        BigDecimal value = null;
         if (args.length != 1) {
             System.err.println("Usage: NumberPrinter value");
             System.exit(1);
         }
-        double value = Double.parseDouble(args[0]);
-        if (value < 0) {
+        try {
+            value = new BigDecimal(args[0]);
+        } catch (NumberFormatException ex) {
+            System.err.println("value must be a valid decimal number.");
+            System.exit(1);
+        }
+        if (value.compareTo(BigDecimal.ZERO) < 0) {
             System.err.println("Value must be non-negative.");
+            System.exit(2);
         }
         final ResourceBundle translationConfig = ResourceBundle.getBundle("number_translations");
         Translator translator = new Translator(translationConfig);
